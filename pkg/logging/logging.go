@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func Log(message, typ, level string, r *http.Request) {
+func Log(message, level string, r *http.Request) {
 	ip := pkg.ClientIP(r)
 	t := time.Now()
 
@@ -17,7 +17,7 @@ func Log(message, typ, level string, r *http.Request) {
 	reset := "\033[0m"
 	var log string
 
-	switch typ {
+	switch level {
 	case "INFO":
 		log = green + "INFO" + reset
 	case "ERROR":
