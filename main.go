@@ -20,6 +20,9 @@ func main() {
 	case "server":
 		cmd.Server()
 
+	case "build":
+		cmd.Build()
+
 	case "migrate":
 		cmd.Migrate()
 
@@ -54,12 +57,13 @@ func main() {
 func Help() {
 	fmt.Print(`
 Available commands:
-	go run . server					[ run server ]
-	go run . migrate				[ run migration ]
-	go run . rollback				[ down migration ]
-	go run . seed					[ run seed SQL ]
-	go run . fresh					[ rollback -> migrate -> seed ]
-	go run . make:migration <table_name>		[ create timestamped up/down migration pair ]
-	go run . make:seed <table_name>			[ create seed SQL template ]
+	go run . server					run server
+	go run . build					build project
+	go run . migrate				run migration
+	go run . rollback				down migration
+	go run . seed					run seed SQL
+	go run . fresh					rollback -> migrate -> seed
+	go run . make:migration <table_name>		create timestamped up/down migration pair
+	go run . make:seed <table_name>			create seed SQL template
 	`)
 }
