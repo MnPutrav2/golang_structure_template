@@ -5,9 +5,13 @@ import (
 	"clean-arsitektur/cmd/make"
 	"fmt"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	_ = godotenv.Load()
+
 	if len(os.Args) < 2 {
 		Help()
 		return
@@ -16,9 +20,15 @@ func main() {
 	cli := os.Args[1]
 	args := os.Args[2:]
 
+	prod := os.Getenv("APP_LISTEN")
+	dev := os.Getenv("APP_LISTEN_DEV")
+
 	switch cli {
 	case "server":
-		cmd.Server()
+		cmd.Server(prod)
+
+	case "dev":
+		cmd.Server(dev)
 
 	case "migrate":
 		cmd.Migrate()

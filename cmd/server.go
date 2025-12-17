@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Server() {
+func Server(listen string) {
 	db, err := config.Database()
 	if err != nil {
 		panic(err)
@@ -19,5 +19,5 @@ func Server() {
 
 	fmt.Println("[  Database connected ]")
 	fmt.Println("[  Server listen in port ", os.Getenv("APP_LISTEN"), " ]")
-	http.ListenAndServe(os.Getenv("APP_LISTEN"), nil)
+	http.ListenAndServe(listen, nil)
 }
