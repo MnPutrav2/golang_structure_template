@@ -11,104 +11,109 @@ import (
 func Template(dir, name, ty string) {
 	module := moduleReader()
 
-	hdlTemp := `package handler
+	hdlTemp := fmt.Sprintf(`
+		package handler
 
-import (
-	"` + module + `/internal/model"
-	logging "` + module + `/pkg/logging"
-	"` + module + `/pkg/middleware"
-	"database/sql"
-	"encoding/json"
-	"net/http"
-)
+		import (
+			"%s/internal/model"
+			logging "%s/pkg/logging"
+			"%s/pkg/middleware"
+			"database/sql"
+			"encoding/json"
+			"net/http"
+		)
 
-func ` + capitalize(name) + `Controller(db *sql.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+		func %sController(db *sql.DB) http.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request) {
 
-		switch r.Method {
-		case "GET":
-			// Write method get
-			// Example
-			handlerName(db)(w, r)
-		case "POST":
-			// Write method post
-		case "PUT":
-			// Write method put
-		case "DELETE":
-			// Write method delete
+				switch r.Method {
+				case "GET":
+					// Write method get
+					// Example
+					handlerName(db)(w, r)
+				case "POST":
+					// Write method post
+				case "PUT":
+					// Write method put
+				case "DELETE":
+					// Write method delete
+				}
+
+			}
 		}
 
-	}
-}
-
-func handlerName(db *sql.DB) http.HandlerFunc {
-	return middleware.CORS(
-		middleware.RateLimiter(1, 1, func(w http.ResponseWriter, r *http.Request) {
-			// Write code in here
-			res, _ := json.Marshal(model.ResponseMessage{Status: "success", Message: "message"})
-			logging.Log("message", "INFO", r)
-			w.WriteHeader(200)
-			w.Write(res)
-		}),
-	)
-}`
+		func handlerName(db *sql.DB) http.HandlerFunc {
+			return middleware.CORS(
+				middleware.RateLimiter(1, 1, func(w http.ResponseWriter, r *http.Request) {
+					// Write code in here
+					res, _ := json.Marshal(model.ResponseMessage{Status: "success", Message: "message"})
+					logging.Log("message", "INFO", r)
+					w.WriteHeader(200)
+					w.Write(res)
+				}),
+			)
+		}
+		`, module, module, module, capitalize(name))
 
 	// this service template
+	servTemp := fmt.Sprintf(`
+		package service
 
-	servTemp := `package service
+		import (
+			"database/sql"
+		)
 
-import (
-	"database/sql"
-)
+		type %sService struct {
+			db *sql.DB
+		}
 
-type ` + name + `Service struct {
-	db *sql.DB
-}
+		type %sService interface {
+			ExampleService(id string) (string, error)
+			// Add function in here
+		}
 
-type ` + capitalize(name) + `Service interface {
-	ExampleService(id string) (string, error)
-	// Add function in here
-}
+		func New%sService(db *sql.DB) %sService {
+			return &%sService{db}
+		}
 
-func New` + capitalize(name) + `Service(db *sql.DB) ` + capitalize(name) + `Service {
-	return &` + name + `Service{db}
-}
-
-// Write code in here
-func (q *` + name + `Service) ExampleService(id string) (string, error) {
-	return "success", nil
-}`
+		// Write code in here
+		func (q *%sService) ExampleService(id string) (string, error) {
+			return "success", nil
+		}
+	`, name, capitalize(name), capitalize(name), capitalize(name), name, name)
 
 	// this repository template
 
-	repoTemp := `package repository
+	repoTemp := fmt.Sprintf(`
+		package repository
 
-import (
-	"database/sql"
-)
+		import (
+			"database/sql"
+		)
 
-type ` + name + `Repository struct {
-	db *sql.DB
-}
+		type %sRepository struct {
+			db *sql.DB
+		}
 
-type ` + capitalize(name) + `Repository interface {
-	ExampleRepo(id string) error
-	// Add function in here
-}
+		type %sRepository interface {
+			ExampleRepo(id string) error
+			// Add function in here
+		}
 
-func New` + capitalize(name) + `Repository(db *sql.DB) ` + capitalize(name) + `Repository {
-	return &` + name + `Repository{db}
-}
+		func New%sRepository(db *sql.DB) %sRepository {
+			return &%sRepository{db}
+		}
 
-// Write code in here
-func (q *` + name + `Repository) ExampleRepo(id string) error {
+		// Write code in here
+		func (q *%sRepository) ExampleRepo(id string) error {
 
-	if _, err := q.db.Exec("INSERT INTO table VALUES($1)", id); err != nil {
-		return err
-	}
+			if _, err := q.db.Exec("INSERT INTO table VALUES($1)", id); err != nil {
+				return err
+			}
 
-	return nil
-}`
+			return nil
+		}
+		`, name, capitalize(name), capitalize(name), capitalize(name), name, name)
 
 	switch ty {
 	case "-h":
