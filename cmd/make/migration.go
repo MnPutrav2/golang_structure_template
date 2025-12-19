@@ -31,7 +31,7 @@ func Migration(name string) {
 	os.WriteFile(upPath, []byte(fmt.Sprintf(`
 	
 	CREATE TABLE IF NOT EXISTS %s (
-		id SERIAL PRIMARY KEY NOT NULL,
+		id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 		created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 		updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
 
