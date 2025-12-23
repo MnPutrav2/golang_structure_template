@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"clean-arsitektur/internal/config"
+	"clean-arsitektur/config"
 	"fmt"
 	"log"
 	"os"

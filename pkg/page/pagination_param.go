@@ -1,13 +1,15 @@
 package page
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func ParamPagination(param string, def int, r *http.Request) int {
 	var page int
 
-	p, err := CheckParam(param, r)
+	p, err := checkParam(param, r)
 	if err != nil {
 		page = def
 	} else {
@@ -20,7 +22,7 @@ func ParamPagination(param string, def int, r *http.Request) int {
 func ParamOffset(size int, r *http.Request) (int, int) {
 	var page int
 
-	p, err := CheckParam("page", r)
+	p, err := checkParam("page", r)
 	if err != nil {
 		page = 0
 	} else {
@@ -30,4 +32,20 @@ func ParamOffset(size int, r *http.Request) (int, int) {
 	offsite := page * size
 
 	return page, offsite
+}
+
+func checkParam(param string, r *http.Request) (int, error) {
+	para := r.URL.Query()
+	id := para.Get(param)
+
+	if id == "" {
+		return 0, fmt.Errorf("%s", "Empty parameter "+param)
+	}
+
+	st, err := strconv.Atoi(id)
+	if err != nil {
+		return 0, err
+	}
+
+	return st, nil
 }

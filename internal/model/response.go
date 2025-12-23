@@ -3,5 +3,9 @@ package model
 type ResponseMessage struct {
 	Status  string `json:"status"`
 	Message string `json:"message"`
-	Meta    any    `json:"meta"`
+}
+
+type ResponseBody struct {
+	Status   string `json:"status"`
+	Response any    `json:"message"`
 }
