@@ -22,7 +22,7 @@ func ParamOffset(size int, r *http.Request) (int, int) {
 
 	p, err := CheckParam("page", r)
 	if err != nil {
-		page = 1
+		page = 0
 	} else {
 		page = p
 	}
